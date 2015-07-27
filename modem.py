@@ -6,6 +6,7 @@ __author__ = 'ArmiT'
 from serial import Serial
 import time
 from messaging.sms import SmsSubmit
+# import types
 
 """
 Resources:
@@ -79,7 +80,7 @@ class Modem:
                 i += 1
                 response += append
 
-            if response.find("+CMGS:") != -1: return True
+            if response.find("+CMGS:") != -1: return True  # todo possible - if "+CMGS:" in response:
             if response.find("+CMS ERROR:") != -1: return False
 
         return False
@@ -123,7 +124,8 @@ class Modem:
         It destroys the connection and all associated resources
         :return: void
         """
-        self.connection.close()
+        if isinstance(self.connection, Serial):
+            self.connection.close()
 
 if __name__ == '__main__':
     m = Modem("COM4")
