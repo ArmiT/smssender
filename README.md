@@ -29,6 +29,7 @@ Where:
 Parameters should be encoded to the url format.
 
 After processing, server sends response in the next format:
+
 * if all OK
 HTTP 200OK
 ```json
@@ -36,6 +37,7 @@ HTTP 200OK
     "response": "success"
 }
 ```
+
 * if happens internal error
 HTTP 500
 ```json
@@ -43,6 +45,7 @@ HTTP 500
     "error": "<error description>"
 }
 ```
+
 * if authenticate fails
 HTTP 401
 ```json
@@ -50,8 +53,8 @@ HTTP 401
     "error": "Authenticate error"
 }
 ```
-
 Possible errors:
+
 * the text should not be an empty string
 * The text should not be longer than 160 characters to ascii
 * The text should not be longer than 70 characters for not ascii
@@ -70,6 +73,7 @@ Full request:
 ## Installing
 
 You must install next packages:
+
 * [Serial](https://pypi.python.org/pypi/pyserial)
 * [python-messaging](https://github.com/pmarti/python-messaging)
 
@@ -94,12 +98,14 @@ keys=[{"key": "500a7f0d325e421227edfd2952a4dd10"}, {"key": "54b41191a856acc1be94
 ```
 
 Prepare modem
+
 * Set modem to the USB port
 * Install the drivers
 * Check whether there a new serial ports in the list of devices.  For example: you should found port with name "HUAWEI Mobile Connect - 3G PC UI Interface"
 * For Microsoft Windows OS only: Stop the service, which the occupy serial port. For example "MegaFon Internet Service"
 8 Add the exception for service and port to the firewall
 * Run the server
+
 ```
 python main.py
 ```
