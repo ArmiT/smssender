@@ -22,6 +22,7 @@ Example -  If you want to create sms, Send the request to the server with next p
 }
 ```
 Where:
+
 * phone have format: (\+?7|8)(){11} 
 * text can contains up to 160 of ascii symbols, or up to 70 cyrillic or other utf-8 symbols    
 
