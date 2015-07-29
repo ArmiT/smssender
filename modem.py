@@ -109,13 +109,14 @@ class Modem:
         :return: boolean - Returns a True if message sent successfully, otherwise False
         """
 
-        sms = SmsSubmit(phone, text.decode("utf-8"))
+        # sms = SmsSubmit(phone, text.decode("utf-8"))
+        sms = SmsSubmit(phone, text)
         pdu = sms.to_pdu()[0]
         time.sleep(2)
         self.connection.write("AT+CMGF=0\x0D")  # enter pdu mode
         self.connection.readline()
         time.sleep(2)
-        self.connection.write("AT+CMGS=%s2\x0D%s\x1A" % (pdu.length, pdu.pdu))
+        self.connection.write("AT+CMGS=%s\x0D%s\x1A" % (pdu.length, pdu.pdu))
 
         return self.check_response()
 
@@ -128,8 +129,9 @@ class Modem:
             self.connection.close()
 
 if __name__ == '__main__':
-    m = Modem("COM4")
-    print m.send_sms_text("+79203048606", "test this is")
+    pass
+    # m = Modem("COM12")
+    # print m.send_sms_text("+79203048606", "test this is")
     # print m.send_sms_pdu("+79203048606", "Ваша заявка №123 принята. См. http://d3.ru/wfv13kgt")
 
 ###

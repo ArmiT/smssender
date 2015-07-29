@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 __author__ = 'ArmiT'
 
 # https://docs.python.org/2/library/threading.html#semaphore-objects
@@ -10,23 +11,27 @@ from handler import SmsHandler
 import logging
 import logger
 import os
+import config
 
-
-HTTP_HOST = "127.0.0.1"
+# default parameters
+HTTP_HOST = "192.168.0.175"
 HTTP_PORT = 8080
-ERROR_LOG = "app.log"
-SERIAL_PORT = "COM4"
+APP_LOG = "app.log"
+SERIAL_PORT = "COM12"
 BAUDRATE = 9600
-
-"""
-Usage:
-http://<service IP>:<port>/?c=sendsms&params={"phone":"+79233054392", "text": "this is sms text..."}
-"""
-
+KEY_PARAM = "access-token"
 
 if __name__ == "__main__":
 
-    logger.init(os.path.dirname(__file__), ERROR_LOG)
+    config.CONFIG = config.init(".config")  # Don't know right way
+
+    HTTP_HOST = config.CONFIG.get('HTTP').get('host', HTTP_HOST)
+    HTTP_PORT = int(config.CONFIG.get('HTTP').get('port', HTTP_PORT))
+    APP_LOG = config.CONFIG.get('LOG').get('file', APP_LOG)
+    SERIAL_PORT = config.CONFIG.get('SERIAL').get('port', SERIAL_PORT)
+    BAUDRATE = int(config.CONFIG.get('SERIAL').get('baudrate', BAUDRATE))
+
+    logger.init(os.path.dirname(__file__), APP_LOG)
     log = logging.getLogger(logger.NAME)
 
     try:

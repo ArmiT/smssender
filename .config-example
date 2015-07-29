@@ -1,0 +1,17 @@
+; example config file
+; Attention! After fill this file should be renamed to the .config
+
+[HTTP] ; parameters for http server
+host=192.168.0.175
+port=8080
+
+[LOG]
+file=app.log
+
+[SERIAL] ; parameters for connection to the modem
+port=COM12
+baudrate=9600
+
+[AUTH] ; parameters for authenticate
+key_param=access-token ; name of the GET parameter, which contains auth key
+keys=[{"key": "123"}, {"key": "123"}] ; list of the auth keys
