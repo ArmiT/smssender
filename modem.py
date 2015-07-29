@@ -70,7 +70,7 @@ class Modem:
         """
 
         response = ""
-        max_lines_count = 100
+        max_lines_count = 1000
         i = 0
         #  wait response from modem - read 100 lines max
         while i <= max_lines_count:

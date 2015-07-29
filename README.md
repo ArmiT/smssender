@@ -64,6 +64,7 @@ Possible errors:
 * internal modem error. The message not sended
 * command is required
 * Authenticate error
+* SmsHandler instance has no attribute '<unknown command>'
 
 Full request:
 ```
