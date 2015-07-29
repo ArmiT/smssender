@@ -76,7 +76,7 @@ class ServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         key_param = config.CONFIG.get('AUTH').get('key_param')
 
         key = params.get(key_param, [""])[0]
-        cmd = params.get("c", ["status"])
+        cmd = params.get("c", ["nothing"])
         attrs = params.get("params", ["{}"])
 
         log.info("%s[%s] - %s: %s" % (self.address_string(), self.client_address, "".join(cmd), "".join(attrs)))

@@ -64,9 +64,12 @@ class SmsHandler:
         result = self.connection.send_sms_pdu(str(params.get('phone')), params.get('text'))
 
         if not result:
-            BaseException("internal modem error. The message not sended")
+            raise BaseException("internal modem error. The message not sended")
 
         log = logging.getLogger(logger.NAME)
         log.info("Sms successfully send")
 
         return "success"
+
+    def nothing(self, params={}):
+        raise BaseException("command is required")
