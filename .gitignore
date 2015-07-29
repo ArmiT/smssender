@@ -1,3 +1,5 @@
+.idea
 .config
 *.log
 *.log.*
+*.pyc
