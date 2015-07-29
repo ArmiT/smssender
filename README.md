@@ -10,13 +10,15 @@ http://<host>[:port]/?c=<command>&access-token=<valid_auth_key>[&params=<params_
 ```
 
 Example -  If you want to create sms, Send the request to the server with next parameters:
-* c=send_sms
-* access-token=<valid auth key>
-* params in the next format:
+
+ * c=send_sms
+ * access-token=<valid auth key>
+ * params in the next format:
+
 ```json
 {
     "phone": "89203048606", 
-    "text": "Ваша заявка №12346 Принята в обработку. См. http://d3.ru/1dhk54ff"
+    "text": "Р’Р°С€Р° Р·Р°СЏРІРєР° в„–12346 РџСЂРёРЅСЏС‚Р° РІ РѕР±СЂР°Р±РѕС‚РєСѓ. РЎРј. http://d3.ru/1dhk54ff"
 }
 ```
 Where:
@@ -61,7 +63,7 @@ Possible errors:
 
 Full request:
 ```
-192.168.0.175:8080/?c=send_sms&access-token=500a7317788e421227edf73552a4dd10&params={"phone": "%2B79203048606", "text": "Your task №12346 is done"}
+192.168.0.175:8080/?c=send_sms&access-token=500a7317788e421227edf73552a4dd10&params={"phone": "%2B79203048606", "text": "Your task в„–12346 is done"}
 ```
 
 ## Installing
