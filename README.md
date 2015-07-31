@@ -12,7 +12,7 @@ http://<host>[:port]/?c=<command>&access-token=<valid_auth_key>[&params=<params_
 Available next commands:
 
  * *send_sms* - sends an sms in the PDU mode, Require additional parameters {"phone": "", "text": ""}
- * get_balance* - requests a balance for SIM card and parses response
+ * *get_balance* - requests a balance for SIM card and parses response
 
 Example -  If you want to create sms, Send the request to the server with next parameters:
 
