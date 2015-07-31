@@ -9,6 +9,11 @@ After start the server you can send GET requests in the next format:
 http://<host>[:port]/?c=<command>&access-token=<valid_auth_key>[&params=<params_in_the_json>]
 ```
 
+Available next commands:
+
+ * send_sms - sends an sms in the PDU mode, Require additional parameters {"phone": "", "text": ""}
+ * get_balance - requests a balance for SIM card and parses response
+
 Example -  If you want to create sms, Send the request to the server with next parameters:
 
  * c=send_sms
@@ -35,6 +40,7 @@ HTTP 200OK
 ```json
 {
     "response": "success"
+    "code": 200
 }
 ```
 
@@ -43,6 +49,7 @@ HTTP 500
 ```json
 {
     "error": "<error description>"
+    "code": <int>
 }
 ```
 
@@ -55,16 +62,16 @@ HTTP 401
 ```
 Possible errors:
 
-* the text should not be an empty string
-* The text should not be longer than 160 characters to ascii
-* The text should not be longer than 70 characters for not ascii
-* phone number is required
-* phone number has invalid format
-* payload is required
-* internal modem error. The message not sended
-* command is required
-* Authenticate error
-* SmsHandler instance has no attribute '<unknown command>'
+* 10 - command is required
+* 21 - the text should not be an empty string
+* 22 - The text should not be longer than 160 characters to ascii
+* 23 - The text should not be longer than 70 characters for not ascii
+* 30 - phone number is required
+* 31 - phone number has invalid format
+* 32 - payload is required
+* 33 - internal modem error. The message not sended
+* 401 - Authenticate error
+* none - SmsHandler instance has no attribute '<unknown command>'
 
 Full request:
 ```
