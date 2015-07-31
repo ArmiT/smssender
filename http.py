@@ -98,7 +98,7 @@ class ServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         try:
 
             if not self.check_auth(key):
-                raise AuthException(message="Authenticate error", code=401)
+                raise AuthException(message="Authenticate error", code=41)
 
             log_key = key[:5]
             log_key += "*" * 27
@@ -116,7 +116,7 @@ class ServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "text/json")
             self.end_headers()
-            self.wfile.write(json.dumps({"response": response, "code": 200}))
+            self.wfile.write(json.dumps({"response": response, "code": 0}))
 
     def call_handler(self, handler, command, params):
         """
@@ -126,9 +126,14 @@ class ServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         :param params: dictionary
         :return:
         """
-        params = json.loads(params)
-        method = getattr(handler, command)
-        return method(params)
+        try:
+            params = json.loads(params)
+            method = getattr(handler, command)
+
+        except AttributeError as e:
+            raise AppException(e.message, 40)
+        else:
+            return method(params)
 
     def check_auth(self, key):
         """

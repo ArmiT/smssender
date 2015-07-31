@@ -11,8 +11,8 @@ http://<host>[:port]/?c=<command>&access-token=<valid_auth_key>[&params=<params_
 
 Available next commands:
 
- * send_sms - sends an sms in the PDU mode, Require additional parameters {"phone": "", "text": ""}
- * get_balance - requests a balance for SIM card and parses response
+ * *send_sms* - sends an sms in the PDU mode, Require additional parameters {"phone": "", "text": ""}
+ * get_balance* - requests a balance for SIM card and parses response
 
 Example -  If you want to create sms, Send the request to the server with next parameters:
 
@@ -40,7 +40,7 @@ HTTP 200OK
 ```json
 {
     "response": "success"
-    "code": 200
+    "code": 0
 }
 ```
 
@@ -58,6 +58,7 @@ HTTP 401
 ```json
 {
     "error": "Authenticate error"
+    "code": <int>
 }
 ```
 Possible errors:
@@ -70,8 +71,10 @@ Possible errors:
 * 31 - phone number has invalid format
 * 32 - payload is required
 * 33 - internal modem error. The message not sended
-* 401 - Authenticate error
-* none - SmsHandler instance has no attribute '<unknown command>'
+* 40 - SmsHandler instance has no attribute '<unknown command>'
+* 41 - Authenticate error
+
+if all ok - code has zero value
 
 Full request:
 ```
