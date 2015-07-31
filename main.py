@@ -17,7 +17,7 @@ import config
 HTTP_HOST = "192.168.0.175"
 HTTP_PORT = 8080
 APP_LOG = "app.log"
-SERIAL_PORT = "COM12"
+SERIAL_PORT = "COM11"
 BAUDRATE = 9600
 KEY_PARAM = "access-token"
 

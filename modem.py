@@ -6,7 +6,8 @@ __author__ = 'ArmiT'
 from serial import Serial
 import time
 from messaging.sms import SmsSubmit
-# import types
+import base64
+import re
 
 """
 Resources:
@@ -20,6 +21,7 @@ Resources:
 # https://github.com/pmarti/python-messaging/blob/master/doc/tutorial/sms.rst - tutorial for sending
 # http://www.minimoesfuerzo.org/blog/python-messaging-sms-encoderdecoder-masses/ - questions and answers from author
 #  (multipart sending)
+# http://www.linux.org.ru/forum/linux-hardware/6403426#comment-6403454 create CUSD
 """
 
 
@@ -31,6 +33,7 @@ class Modem:
     - Reload modem in the software
     - Send sms in the text mode
     - Send sms in the PDU mode
+    - Request balance for the SIM card
     :example
     m = Modem("COM4")
     print m.send_sms_text("+79203080806", "test this is")
@@ -72,7 +75,7 @@ class Modem:
         response = ""
         max_lines_count = 1000
         i = 0
-        #  wait response from modem - read 100 lines max
+        #  wait response from modem - read 1000 lines max
         while i <= max_lines_count:
 
             append = self.connection.readline()
@@ -120,6 +123,52 @@ class Modem:
 
         return self.check_response()
 
+    def check_balance(self):
+        """
+        Gets balance of SIM card
+        Sends a USSD request to the *100# and parses the response
+        :return: string
+        """
+        time.sleep(3)
+        self.connection.write("AT+CMGF=0\x0D")
+        time.sleep(2)
+        self.connection.write('AT+CUSD=1,"' + self.to7bit('*100#') + '",15\x0D')
+        time.sleep(1)
+
+        response = ''
+        max_lines_count = 1000
+        i = 0
+
+        #  wait response from modem - read 1000 lines max
+        while i <= max_lines_count:
+            append = self.connection.readline()
+            if len(append):
+                i += 1
+                response += append
+            if "ERROR" in response:
+                return False
+
+            entry = re.search('\+CUSD: 0,"([0-9A-Z]+)",', response)
+
+            if entry:
+                answer = base64.b16decode(entry.group(1)).decode('utf-16-be')
+                return re.search(ur'(\-?\d+(.\d+)?)(.*)', answer).group(1)  # for megafon ussd only!
+
+            # start_pos = response.find("+CUSD:")
+            #
+            # if start_pos != -1:
+            #     end_pos = response.find('",', start_pos)
+            #
+            #     if end_pos == -1:
+            #         return False
+            #
+            #     answer = response[start_pos: end_pos]
+            #     return base64.b16decode(answer[10:]).decode('utf-16-be')
+
+            # if "+CUSD:" in response:
+
+        return False
+
     def __del__(self):
         """
         It destroys the connection and all associated resources
@@ -128,9 +177,44 @@ class Modem:
         if isinstance(self.connection, Serial):
             self.connection.close()
 
+    def to7bit(self, src):
+        """
+        Converts to the 7bit
+        :param src:
+        :return:
+        """
+        result, count, last = [], 0, 0
+        for c in src:
+            this = ord(c) << (8 - count)
+            if count:
+                result.append('%02X' % ((last >> 8) | (this & 0xFF)))
+            count = (count + 1) % 8
+            last = this
+
+        result.append('%02x' % (last >> 8))
+        return ''.join(result)
+
 if __name__ == '__main__':
     pass
-    # m = Modem("COM12")
+    # import base64
+    # import re
+    # l = '12333 +CUSD: 0,"002D003100300031002E003200300440002E0423044104420430043D043E04320438044204350020044804430442043A044300200441043E002004410432043E0438043C00200438043C0435043D0435043C0020043D04300020043304430434043A043800210020002A00350035003100230020",72 werwer'
+    #
+    # entry = re.search('\+CUSD: 0,"([0-9A-Z]+)",', l)
+    # # print str(entry.group(1)).decode('utf-16-be')
+    # print entry
+
+    # print(base64.b16decode(entry.group(1)).decode('utf-16-be'))
+    # print(base64.b16decode(l[10:l.rfind('"')]).decode('utf-16-be'))
+
+    # print ('AT+CUSD=1,' + to7bit('*100#') + ',15')
+    # answer = '-102.40р."Обещанный платёж" 300р. на 3 дня: *106*1#  (20р.)'
+    # print re.search(ur'(\-?\d+(.\d+)?)(.*)', answer).group(1)
+    # print re.search(ur'\u0440+.', answer)
+
+    # m = Modem("COM11")
+    # print m.check_balance()
+
     # print m.send_sms_text("+79203048606", "test this is")
     # print m.send_sms_pdu("+79203048606", "Ваша заявка №123 принята. См. http://d3.ru/wfv13kgt")
 

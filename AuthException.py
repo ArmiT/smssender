@@ -1,7 +1,9 @@
 __author__ = 'ArmiT'
 
+from AppException import AppException
 
-class AuthException(BaseException):
+
+class AuthException(AppException):
     """
     Exception for catching unauthorized requests
     """

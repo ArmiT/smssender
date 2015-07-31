@@ -8,13 +8,16 @@ import json
 import logging
 import logger
 from AuthException import AuthException
-import traceback
+from AppException import AppException
 import config
 
 log = logging.getLogger(logger.NAME)
 
 
 class Observer:
+    """
+    Facade for BaseHTTPServer
+    """
 
     def __init__(self):
         self.server = BaseHTTPServer.HTTPServer
@@ -59,15 +62,26 @@ class ServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def log_error(self, format, *args):
         log.error(format % args)
 
-    def handle_error(self, message, code = 500):
-        self.send_response(code)
+    def handle_error(self, e, http_code=500):
+        """
+        Sends error http response and adds record to the log
+        :param e: AppException
+        :param http_code: int
+        :return:
+        """
+
+        self.send_response(http_code)
         self.send_header("Content-type", "text/json")
         self.end_headers()
 
-        self.wfile.write(json.dumps({"error": message}))
-        log.error("processing: %s" % message)
+        self.wfile.write(json.dumps({"error": e.message, "code": e.code}))
+        log.error("processing: %s:%s" % (e.message, e.code))
 
     def do_GET(self):
+        """
+        It serves GET requests
+        :return:
+        """
 
         params = urlparse.parse_qs(
             urlparse.urlparse(self.path).query
@@ -84,30 +98,44 @@ class ServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         try:
 
             if not self.check_auth(key):
-                raise AuthException("Authenticate error")
+                raise AuthException(message="Authenticate error", code=401)
 
             log_key = key[:5]
             log_key += "*" * 27
             log.info("auth success [%s]" % log_key)
 
             response = self.call_handler(ServerHandler.sender_handler, cmd[0], attrs[0])
+
+        except AuthException as e:
+            self.handle_error(e, 401)
+
+        except AppException as e:
+            self.handle_error(e)
+
+        else:
             self.send_response(200)
             self.send_header("Content-type", "text/json")
             self.end_headers()
-            self.wfile.write(json.dumps({"response": response}))
-
-        except AuthException as e:
-            self.handle_error(e.message, 401)
-
-        except BaseException as e:
-            self.handle_error(e.message)
+            self.wfile.write(json.dumps({"response": response, "code": 200}))
 
     def call_handler(self, handler, command, params):
+        """
+        Calls the requested command of a handler with given parameters
+        :param handler: instance of a hanвдук class
+        :param command: string
+        :param params: dictionary
+        :return:
+        """
         params = json.loads(params)
         method = getattr(handler, command)
         return method(params)
 
     def check_auth(self, key):
+        """
+        Checks authority
+        :param key:
+        :return:
+        """
         keys = config.CONFIG.get('AUTH').get('keys')
         keys = json.loads(keys)
 
