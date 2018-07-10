@@ -22,7 +22,7 @@ Example -  If you want to create sms, Send the request to the server with next p
 
 ```json
 {
-    "phone": "89203048606", 
+    "phone": "89203058686", 
     "text": "Ваша заявка №12346 Принята в обработку. См. http://d3.ru/1dhk54ff"
 }
 ```
@@ -78,7 +78,7 @@ if all ok - code has zero value
 
 Full request:
 ```
-192.168.0.175:8080/?c=send_sms&access-token=500a7317788e421227edf73552a4dd10&params={"phone": "%2B79203048606", "text": "Your task №12346 is done"}
+192.168.0.175:8080/?c=send_sms&access-token=500a7317788e421227edf73552a4dd10&params={"phone": "%2B79203058686", "text": "Your task №12346 is done"}
 ```
 
 ## Installing
